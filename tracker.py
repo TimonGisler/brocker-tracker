@@ -1,3 +1,4 @@
+import os
 import re
 from datetime import date
 from bs4 import BeautifulSoup
@@ -5,7 +6,7 @@ from selenium import webdriver
 
 
 # File into which the scraped data will be saved
-FILE_PATH = "data.txt"
+FILE_PATH = "data/data.txt"
 
 URLS_TO_SCRAPE = [ "https://www.home.saxo/en-mena/legal/risk-warning/saxo-risk-warning"
                , "https://www.interactivebrokers.co.uk/de/index.php?f=38931&cc=US"
@@ -52,12 +53,15 @@ def scrape_site_for_cfd_text(url_to_scrape):
     # Search for the specific text pattern
     pattern = r"(\d+.?\d+)% of retail"
     match = re.search(pattern, text)
-    percentage = match.group(1)
+    percentage = match.group(1) # TODO TGIS, make sure that if this does not work, the program does not crash and some default value is used as percentage
 
     # Save the percentage
     save_data_to_file(percentage, url_to_scrape)
 
 
+
+# Ensure the directory exists
+os.makedirs(os.path.dirname(FILE_PATH), exist_ok=True)
 
 # add current date to file
 with open(FILE_PATH, "a", encoding="utf-8") as file:

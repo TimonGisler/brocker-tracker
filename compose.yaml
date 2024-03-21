@@ -11,6 +11,10 @@ services:
   server:
     build:
       context: .
+      volumes:
+      - type: bind
+        source: ./static # path on host machine
+        target: /opt/app/static # path inside container
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
