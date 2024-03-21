@@ -1,4 +1,5 @@
 # pylint: disable=line-too-long
+import time
 import os
 import re
 from datetime import date
@@ -27,9 +28,12 @@ def main():
 
     # Loop through the urls and scrape the text
     for url in URLS_TO_SCRAPE:
-        text = get_page_text_using_selenium(url)
+        #text = get_page_text_using_selenium(url)
+        text = get_page_text_dummy(url)
+
         percentage = extract_percentage_from_text(text)
         save_data_to_file(percentage, url)
+
 
 def set_up_file():
     """Sets up the file to which the scraped data will be saved. (add current date and create file if it does not exist)"""

@@ -9,11 +9,11 @@
 # https://github.com/docker/awesome-compose
 services:
   server:
-    image: brokertracker:1.0
+    image: brokertracker:3
     volumes:
       - type: bind # mount the volume from the host machine
         source: ./brokerTrackerData # path on host machine --> relative to this compose.yml file
-        target: /opt/data # path inside container
+        target: /app/data # path inside container
     build:
       context: .
 
