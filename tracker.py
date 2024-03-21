@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 import os
 import re
 from datetime import date
@@ -19,20 +20,32 @@ URLS_TO_SCRAPE = [ "https://www.home.saxo/en-mena/legal/risk-warning/saxo-risk-w
                , "https://www.xtb.com/en/education/what-is-cfd-trading"]
 
 
-def save_data_to_file(percentage_which_loose_money, broker_url):
-    """Saves the scraped data to the file defined in FILE_PATH."""
-    print("Percentage:", percentage_which_loose_money)
+def main():
+    """Main function of the program."""
+    # Set up the file
+    set_up_file()
 
-    # Open the file in append mode
-    with open(FILE_PATH, "a", encoding="utf-8") as file_to_write_percentage_down:
-        # Append the data to the file
-        file_to_write_percentage_down.write(broker_url + ": " + percentage_which_loose_money + "\n")
+    # Loop through the urls and scrape the text
+    for url in URLS_TO_SCRAPE:
+        text = get_page_text_using_selenium(url)
+        percentage = extract_percentage_from_text(text)
+        save_data_to_file(percentage, url)
 
-    print("Data appended to the file successfully.")
+def set_up_file():
+    """Sets up the file to which the scraped data will be saved. (add current date and create file if it does not exist)"""
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(FILE_PATH), exist_ok=True)
+
+    # add current date to file
+    with open(FILE_PATH, "a", encoding="utf-8") as file:
+        file.write("\n" + "Date: " + date.today().strftime('%Y-%m-%d') + "\n")
 
 
-def scrape_site_for_cfd_text(url_to_scrape):
-    """scrapes the passed site for the percentage of retail investors that loose money with CFDs and saves it to a file."""
+def get_page_text_dummy(url_to_scrape):
+    return "This is a dummy text. It contains the percentage 76.5% of retail investors that loose money."
+
+def get_page_text_using_selenium(url_to_scrape):
+    """Gets the text of the page at the passed URL."""
     # Set up the browser
     # user agent string must be set to avoid detection by the website (that we run headless mode --> captcha))
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
@@ -49,24 +62,30 @@ def scrape_site_for_cfd_text(url_to_scrape):
     soup = BeautifulSoup(page_source, "html.parser")
     text = soup.get_text()
     driver.quit()
+    return text
 
+def extract_percentage_from_text(text):
+    """Extracts the percentage of retail investors that loose money from the passed text."""
     # Search for the specific text pattern
     pattern = r"(\d+.?\d+)% of retail"
     match = re.search(pattern, text)
-    percentage = match.group(1) # TODO TGIS, make sure that if this does not work, the program does not crash and some default value is used as percentage
-
-    # Save the percentage
-    save_data_to_file(percentage, url_to_scrape)
+    percentage = match.group(1)  # TODO TGIS, make sure that if this does not work, the program does not crash and some default value is used as percentage
+    return percentage
 
 
+def save_data_to_file(percentage_which_loose_money, broker_url):
+    """Saves the scraped data to the file defined in FILE_PATH."""
+    print("Percentage:", percentage_which_loose_money)
 
-# Ensure the directory exists
-os.makedirs(os.path.dirname(FILE_PATH), exist_ok=True)
+    # Open the file in append mode
+    with open(FILE_PATH, "a", encoding="utf-8") as file_to_write_percentage_down:
+        # Append the data to the file
+        file_to_write_percentage_down.write(broker_url + ": " + percentage_which_loose_money + "\n")
 
-# add current date to file
-with open(FILE_PATH, "a", encoding="utf-8") as file:
-    file.write("\n" + "Date: " + date.today().strftime('%Y-%m-%d') + "\n")
+    print("Data appended to the file successfully.")
 
-# Loop through the urls and scrape the text
-for url in URLS_TO_SCRAPE:
-    scrape_site_for_cfd_text(url)
+
+
+# Run the main function
+if __name__ == "__main__":
+    main()
