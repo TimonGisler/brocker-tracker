@@ -5,7 +5,7 @@ import re
 from datetime import date
 from bs4 import BeautifulSoup
 from selenium import webdriver
-
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 # File into which the scraped data will be saved
 FILE_PATH = "data/data.txt"
@@ -28,8 +28,8 @@ def main():
 
     # Loop through the urls and scrape the text
     for url in URLS_TO_SCRAPE:
-        #text = get_page_text_using_selenium(url)
-        text = get_page_text_dummy(url)
+        text = get_page_text_using_selenium(url)
+        #text = get_page_text_dummy(url)
 
         percentage = extract_percentage_from_text(text)
         save_data_to_file(percentage, url)
@@ -58,7 +58,15 @@ def get_page_text_using_selenium(url_to_scrape):
     options.add_argument('--headless=new')
     # specify the desired user agent
     options.add_argument(f'user-agent={user_agent}')
-    driver = webdriver.Chrome(options=options)
+
+    # guide to run selenium in container and connect: (https://stackoverflow.com/questions/45323271/how-to-run-selenium-with-chrome-in-docker)
+    #local dev commands/code (with docker):
+    # docker run -d -p 4444:4444 selenium/standalone-chrome
+    # driver = driver = webdriver.Remote("http://127.0.0.1:4444/wd/hub", DesiredCapabilities.CHROME, options=options)
+    driver = driver = webdriver.Remote("http://selenium:4444/wd/hub", DesiredCapabilities.CHROME, options=options)
+    # local dev (withoud docker): 
+    # driver = webdriver.Chrome(options=options)
+
 
     # Load the website and get the page source and then the text
     driver.get(url_to_scrape)
@@ -92,4 +100,5 @@ def save_data_to_file(percentage_which_loose_money, broker_url):
 
 # Run the main function
 if __name__ == "__main__":
+    print("Starting the program...")
     main()
