@@ -1,11 +1,9 @@
 # pylint: disable=line-too-long
-import time
 import os
 import re
 from datetime import date
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 # File into which the scraped data will be saved
 FILE_PATH = "data/data.txt"
@@ -18,7 +16,8 @@ URLS_TO_SCRAPE = [ "https://www.home.saxo/en-mena/legal/risk-warning/saxo-risk-w
                , "https://helpcentre.trading212.com/hc/en-us"
                , "https://www.plus500.com/en-es/"
                , "https://capital.com/"
-               , "https://www.xtb.com/en/education/what-is-cfd-trading"]
+               , "https://www.xtb.com/en/education/what-is-cfd-trading"
+               ]
 
 
 def main():
@@ -28,11 +27,14 @@ def main():
 
     # Loop through the urls and scrape the text
     for url in URLS_TO_SCRAPE:
-        text = get_page_text_using_selenium(url)
-        #text = get_page_text_dummy(url)
-
-        percentage = extract_percentage_from_text(text)
-        save_data_to_file(percentage, url)
+        try:
+            text = get_page_text_using_selenium(url)
+            percentage = extract_percentage_from_text(text)
+            save_data_to_file(percentage, url)
+        # pylint: disable-next=W0718
+        except Exception as e:
+            print("Error: ", e)
+            save_data_to_file("Error: " +  repr(e), url)
 
 
 def set_up_file():
@@ -45,11 +47,9 @@ def set_up_file():
         file.write("\n" + "Date: " + date.today().strftime('%Y-%m-%d') + "\n")
 
 
-def get_page_text_dummy(url_to_scrape):
-    return "This is a dummy text. It contains the percentage 76.5% of retail investors that loose money."
-
 def get_page_text_using_selenium(url_to_scrape):
     """Gets the text of the page at the passed URL."""
+
     # Set up the browser
     # user agent string must be set to avoid detection by the website (that we run headless mode --> captcha))
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
@@ -67,7 +67,7 @@ def get_page_text_using_selenium(url_to_scrape):
     # docker run -d -p 4444:4444 selenium/standalone-chrome
     # driver = driver = webdriver.Remote("http://127.0.0.1:4444/wd/hub", DesiredCapabilities.CHROME, options=options)
     driver = driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
-    # local dev (withoud docker): 
+    # local dev (withoud docker):
     # driver = webdriver.Chrome(options=options)
 
 
@@ -79,12 +79,13 @@ def get_page_text_using_selenium(url_to_scrape):
     driver.quit()
     return text
 
+
 def extract_percentage_from_text(text):
     """Extracts the percentage of retail investors that loose money from the passed text."""
     # Search for the specific text pattern
     pattern = r"(\d+.?\d+)% of retail"
     match = re.search(pattern, text)
-    percentage = match.group(1)  # TODO TGIS, make sure that if this does not work, the program does not crash and some default value is used as percentage
+    percentage = match.group(1)
     return percentage
 
 
