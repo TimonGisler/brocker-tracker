@@ -36,6 +36,7 @@ def main():
         except Exception as e:
             print("Error: ", e)
             save_data_to_file("Error: " +  repr(e), url)
+            send_mail_with_data()
 
 
 def set_up_file():
@@ -67,9 +68,9 @@ def get_page_text_using_selenium(url_to_scrape):
     #local dev commands/code (with docker):
     # docker run -d -p 4444:4444 selenium/standalone-chrome
     # driver = driver = webdriver.Remote("http://127.0.0.1:4444/wd/hub", DesiredCapabilities.CHROME, options=options)
-    driver = driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
+    # driver = driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
     # local dev (withoud docker):
-    # driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(options=options)
 
 
     # Load the website and get the page source and then the text
@@ -106,10 +107,9 @@ def save_data_to_file(percentage_which_loose_money, broker_url):
 def send_mail_with_data():
     """Sends an email with the scraped data.
     Make sure the env variableEMAIL_PASSWORD are set."""
-
-
     # send mail with gmail
     FROM = "devtestaccpersonal@gmail.com"
+    PW = "INSERT APP PW HERE"
     TO = "timongisler@icloud.com"
     SUBJECT = "Gambling brocker tracker"
     TEXT = "TEST TEXT, does it work? TODO: add scraped data to the mail."
@@ -121,12 +121,12 @@ def send_mail_with_data():
         server = smtplib.SMTP("smtp.gmail.com", 587)
         server.ehlo()
         server.starttls()
-        server.login(user, pwd)
+        server.login(FROM, PW)
         server.sendmail(FROM, TO, message)
         server.close()
         print('successfully sent the mail')
-    except:
-        print("failed to send mail")
+    except Exception as e:
+        print("failed to send mail: ", e)
 
 
 # Run the main function
