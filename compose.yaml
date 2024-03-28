@@ -2,7 +2,7 @@
 # Use "docker-compose up --abort-on-container-exit" to stop all containers when one container stops (when script ran through)
 services:
   selenium:
-    healthcheck: # depends_on uses this healthcheck to determine if the service is ready (chatgpt generated it and it seems to work)
+    healthcheck: # depends_on of the brockertracker uses this healthcheck to determine if the service is ready (chatgpt generated it and it seems to work)
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4444/wd/hub/status"]
       interval: 10s
       timeout: 5s

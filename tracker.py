@@ -1,10 +1,11 @@
 # pylint: disable=line-too-long
 import os
 import re
+import smtplib
 from datetime import date
 from bs4 import BeautifulSoup
 from selenium import webdriver
-import smtplib
+from dotenv import load_dotenv
 
 # File into which the scraped data will be saved
 FILE_PATH = "data/data.txt"
@@ -64,13 +65,20 @@ def get_page_text_using_selenium(url_to_scrape):
     # https://stackoverflow.com/a/53970825/15015069 --> prevent crashing on certain websites
     options.add_argument('--disable-dev-shm-usage')
 
-    # guide to run selenium in container and connect: (https://stackoverflow.com/questions/45323271/how-to-run-selenium-with-chrome-in-docker)
-    #local dev commands/code (with docker):
-    # docker run -d -p 4444:4444 selenium/standalone-chrome
-    # driver = driver = webdriver.Remote("http://127.0.0.1:4444/wd/hub", DesiredCapabilities.CHROME, options=options)
-    # driver = driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
-    # local dev (withoud docker):
-    driver = webdriver.Chrome(options=options)
+
+    
+    if os.path.exists("/.dockerenv"): # check if we are in a docker container --> if yes, there is no chrome driver installed, and I have to call the remote driver
+        print("Running in docker container, using remote selenium")
+        driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
+    else:
+        driver = webdriver.Chrome(options=options)
+        # below alternate dev run way i can also only start the remote driver and connect to it
+            # guide to run selenium in container and connect: (https://stackoverflow.com/questions/45323271/how-to-run-selenium-with-chrome-in-docker)
+            #local dev commands/code (with docker):
+            # docker run -d -p 4444:4444 selenium/standalone-chrome
+            # driver = driver = webdriver.Remote("http://127.0.0.1:4444/wd/hub", DesiredCapabilities.CHROME, options=options)
+            # driver = driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
+
 
 
     # Load the website and get the page source and then the text
@@ -107,9 +115,10 @@ def save_data_to_file(percentage_which_loose_money, broker_url):
 def send_mail_with_data():
     """Sends an email with the scraped data.
     Make sure the env variableEMAIL_PASSWORD are set."""
-    # send mail with gmail
+    
+    load_dotenv()
     FROM = "devtestaccpersonal@gmail.com"
-    PW = "INSERT APP PW HERE"
+    PW = os.getenv('EMAIL_PASSWORD')
     TO = "timongisler@icloud.com"
     SUBJECT = "Gambling brocker tracker"
     TEXT = "TEST TEXT, does it work? TODO: add scraped data to the mail."
