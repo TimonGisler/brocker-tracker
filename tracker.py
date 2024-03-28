@@ -125,6 +125,7 @@ def send_mail_with_data():
         server.sendmail(FROM, TO, message)
         server.close()
         print('successfully sent the mail')
+    # pylint: disable-next=W0718
     except Exception as e:
         print("failed to send mail: ", e)
 
