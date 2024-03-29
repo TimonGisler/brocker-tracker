@@ -6,7 +6,7 @@ from os.path import basename
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import COMMASPACE, formatdate
+from email.utils import formatdate
 from datetime import date
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -123,21 +123,22 @@ def send_mail_with_data():
     """Sends an email with the scraped data.
     Make sure the env variableEMAIL_PASSWORD are set."""
 
+    print("Sending mail with data...")
     # send mail with gmail
     load_dotenv()
-    FROM = "devtestaccpersonal@gmail.com"
-    PW = os.getenv('EMAIL_PASSWORD')
-    TO = "timongisler@icloud.com"
-    SUBJECT = "Gambling brocker tracker"
-    TEXT = "As always in attachement is the data scraped from the websites."
+    from_mail = "devtestaccpersonal@gmail.com"
+    mail_pw = os.getenv('EMAIL_PASSWORD')
+    to_mail = "timongisler@icloud.com"
+    subject = "Gambling brocker tracker"
+    mail_body_text = "As always in attachement is the data scraped from the websites."
 
     msg = MIMEMultipart()
-    msg['From'] = TO
-    msg['To'] = COMMASPACE.join(TO)
+    msg['From'] = from_mail
+    msg['To'] = to_mail
     msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = SUBJECT
+    msg['Subject'] = subject
 
-    msg.attach(MIMEText(TEXT))
+    msg.attach(MIMEText(mail_body_text))
 
     with open(FILE_PATH, "rb") as fil:
         part = MIMEApplication(
@@ -145,16 +146,17 @@ def send_mail_with_data():
             Name=basename(FILE_PATH)
         )
     # After the file is closed
-    part['Content-Disposition'] = 'attachment; filename="%s"' % basename(FILE_PATH)
+    part['Content-Disposition'] = f'attachment; filename="{basename(FILE_PATH)}"'
     msg.attach(part)
 
 
     smtp = smtplib.SMTP("smtp.gmail.com", 587)
     smtp.ehlo()
     smtp.starttls()
-    smtp.login(FROM, PW)
-    smtp.sendmail(FROM, TO, msg.as_string())
+    smtp.login(from_mail, mail_pw)
+    smtp.sendmail(from_mail, to_mail, msg.as_string())
     smtp.close()
+    print("Mail sent successfully.")
 
 
 # Run the main function
