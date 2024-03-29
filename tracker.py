@@ -2,10 +2,16 @@
 import os
 import re
 import smtplib
+from os.path import basename
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import COMMASPACE, formatdate
 from datetime import date
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from dotenv import load_dotenv
+
 
 # File into which the scraped data will be saved
 FILE_PATH = "data/data.txt"
@@ -37,7 +43,8 @@ def main():
         except Exception as e:
             print("Error: ", e)
             save_data_to_file("Error: " +  repr(e), url)
-            send_mail_with_data()
+
+    send_mail_with_data()
 
 
 def set_up_file():
@@ -115,28 +122,39 @@ def save_data_to_file(percentage_which_loose_money, broker_url):
 def send_mail_with_data():
     """Sends an email with the scraped data.
     Make sure the env variableEMAIL_PASSWORD are set."""
-    
+
+    # send mail with gmail
     load_dotenv()
     FROM = "devtestaccpersonal@gmail.com"
     PW = os.getenv('EMAIL_PASSWORD')
     TO = "timongisler@icloud.com"
     SUBJECT = "Gambling brocker tracker"
-    TEXT = "TEST TEXT, does it work? TODO: add scraped data to the mail."
+    TEXT = "As always in attachement is the data scraped from the websites."
 
-    # Prepare actual message
-    message = """From: %s\nTo: %s\nSubject: %s\n\n%s
-    """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
-    try:
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.ehlo()
-        server.starttls()
-        server.login(FROM, PW)
-        server.sendmail(FROM, TO, message)
-        server.close()
-        print('successfully sent the mail')
-    # pylint: disable-next=W0718
-    except Exception as e:
-        print("failed to send mail: ", e)
+    msg = MIMEMultipart()
+    msg['From'] = TO
+    msg['To'] = COMMASPACE.join(TO)
+    msg['Date'] = formatdate(localtime=True)
+    msg['Subject'] = SUBJECT
+
+    msg.attach(MIMEText(TEXT))
+
+    with open(FILE_PATH, "rb") as fil:
+        part = MIMEApplication(
+            fil.read(),
+            Name=basename(FILE_PATH)
+        )
+    # After the file is closed
+    part['Content-Disposition'] = 'attachment; filename="%s"' % basename(FILE_PATH)
+    msg.attach(part)
+
+
+    smtp = smtplib.SMTP("smtp.gmail.com", 587)
+    smtp.ehlo()
+    smtp.starttls()
+    smtp.login(FROM, PW)
+    smtp.sendmail(FROM, TO, msg.as_string())
+    smtp.close()
 
 
 # Run the main function
