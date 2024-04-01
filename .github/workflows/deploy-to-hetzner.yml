@@ -40,6 +40,8 @@ jobs:
             ls
             echo "running ls ../build to see if the files are there"
             ls ../build
+            echo "running pwd to see where we are"
+            pwd
             
         - 
           name: copy everything over to the server
