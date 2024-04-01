@@ -30,16 +30,16 @@ jobs:
         -
           name: tar content to scp to server (create dir, copy content in it, tar it)
           run: |
-            mkdir ${{ vars.DIR_OF_CONTENT_TO_SCP }}
-            cp -TR . ${{ vars.DIR_OF_CONTENT_TO_SCP }}
+            mkdir /home/runner/work/brocker-tracker/brocker-tracker/data-to-copy
+            cp -TR . /home/runner/work/brocker-tracker/brocker-tracker/data-to-copy
 
         -
           name: debugging
           run: | 
             echo "running ls to see if the files are there"
             ls
-            echo "running ls ${{ vars.DIR_OF_CONTENT_TO_SCP }} to see if the files are there"
-            ls ${{ vars.DIR_OF_CONTENT_TO_SCP }}
+            echo "running ls /home/runner/work/brocker-tracker/brocker-tracker/data-to-copy to see if the files are there"
+            ls /home/runner/work/brocker-tracker/brocker-tracker/data-to-copy
             echo "running pwd to see where we are"
             pwd
             
