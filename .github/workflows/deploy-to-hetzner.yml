@@ -32,8 +32,12 @@ jobs:
           run: |
             mkdir ../build
             cp -TR . ../build
-            cd ..
+
+        -
+          name: debugging
+          run: | 
             ls
+            ls ../build
             
         - 
           name: copy everything over to the server
