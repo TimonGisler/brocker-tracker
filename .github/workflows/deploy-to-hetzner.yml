@@ -36,7 +36,9 @@ jobs:
         -
           name: debugging
           run: | 
+            echo "running ls to see if the files are there"
             ls
+            echo "running ls ../build to see if the files are there"
             ls ../build
             
         - 
@@ -46,7 +48,7 @@ jobs:
               host: ${{ secrets.HETZNER_VPS_IP }}
               username: ${{ secrets.HETZNER_VPS_SSH_USER }}
               key: ${{ secrets.HETZNER_VPS_SSH_PRIVATE_KEY }}
-              source: "build/*"
+              source: "../build"
               target: ${{ vars.CONTENT_DIRECTORY_PATH }}
 
         - 
