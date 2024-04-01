@@ -17,7 +17,9 @@ services:
     image: brokertracker:3
     volumes:
       - type: bind # mount the volume from the host machine
-        source: ./brokerTrackerData # path on host machine --> relative to this compose.yml file
+        source: ./broker-tracker-data # path on host machine --> relative to this compose.yml file
         target: /app/data # path inside container
+        bind:
+          create_host_path: true # https://stackoverflow.com/questions/77827564/docker-compose-does-not-create-directory
     build:
       context: .
