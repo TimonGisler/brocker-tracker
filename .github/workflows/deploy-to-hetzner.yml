@@ -1,18 +1,56 @@
 name: Deploy to hetzner
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+# specify when this workflow runs
+# use event with filters --> https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#using-filters
+# only run the job if push on certain branch
+on:
+    push:
+        branches:
+        - master
+        
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+    build_and_deploy_to_hetzner: # the job id
+        name: build and deploy to hetzner # the job name (displayed in ui)
+        runs-on: ubuntu-latest # Good to know, common tools like docker and npm are preinstalled in ubuntu-latest https://github.com/actions/runner-images#software-and-image-support
+        
+        # define steps to execute https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps
+        steps:
+        - 
+          name: checkout newly pushed commit
+          uses: actions/checkout@v4 # checkout my repo "By default, this action will check-out to the SHA for that workflow’s event (such as push and pull_request)." https://stackoverflow.com/a/76938699/15015069
+
+        - 
+          # uses sed to replace the placeholders in the docker-compose.yml file with the actual image name and tag
+          # s# --> s = start of sed command, # = delimiter (can be any char, but # is common), g = global (replace all occurences)
+          # sed is structured like this: s (start) # (some delimiter) <search pattern> (what to search for) # <replace pattern> (what to replace it with) # g (global, replace all occurences
+          name: prepare .env file (replace placeholders)
+          run: sed -i "s#<insertMailPassword>#${{ secrets.EMAIL_PASSWORD }}#g" ./.env
+
+        # copy all the files to the server was taken from: https://stackoverflow.com/a/61236896/15015069 (create dir, copy content in it, tar it, scp it)
+        -
+          name: tar content to scp to server (create dir, copy content in it, tar it)
+          run: |
+            mkdir ../build
+            cp -TR . ../build
+            tar -cvf deploy.tar ../build/
+            
+        - 
+          name: copy everything over to the server
+          uses: appleboy/scp-action@v0.1.7 # https://github.com/appleboy/scp-action#usage
+          with:
+              host: ${{ secrets.HETZNER_VPS_IP }}
+              username: ${{ secrets.HETZNER_VPS_SSH_USER }}
+              key: ${{ secrets.HETZNER_VPS_SSH_PRIVATE_KEY }}
+              source: "deploy.tar"
+              target: ${{ vars.CONTENT_DIRECTORY_PATH }}
+
+        - 
+          name: run docker compose on the server
+          uses: appleboy/ssh-action@v1.0.2 # https://github.com/appleboy/ssh-action#using-private-key
+          with:
+              host: ${{ secrets.HETZNER_VPS_IP }}
+              username: ${{ secrets.HETZNER_VPS_SSH_USER }}
+              key: ${{ secrets.HETZNER_VPS_SSH_PRIVATE_KEY }}
+              script: | # pipe char means text below is a text block and new lines also belong to it. https://stackoverflow.com/a/61661091/15015069
+                cd ${{ vars.CONTENT_DIRECTORY_PATH }}
+                docker-compose up --abort-on-container-exit --build
