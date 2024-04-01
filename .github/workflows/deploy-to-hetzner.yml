@@ -32,7 +32,6 @@ jobs:
           run: |
             mkdir ../build
             cp -TR . ../build
-            tar -cvf deploy.tar ../build/
             
         - 
           name: copy everything over to the server
@@ -41,7 +40,7 @@ jobs:
               host: ${{ secrets.HETZNER_VPS_IP }}
               username: ${{ secrets.HETZNER_VPS_SSH_USER }}
               key: ${{ secrets.HETZNER_VPS_SSH_PRIVATE_KEY }}
-              source: "deploy.tar"
+              source: "../build/*"
               target: ${{ vars.CONTENT_DIRECTORY_PATH }}
 
         - 
