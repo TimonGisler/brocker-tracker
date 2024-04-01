@@ -25,23 +25,6 @@ jobs:
           # sed is structured like this: s (start) # (some delimiter) <search pattern> (what to search for) # <replace pattern> (what to replace it with) # g (global, replace all occurences
           name: prepare .env file (replace placeholders)
           run: sed -i "s#<insertMailPassword>#${{ secrets.EMAIL_PASSWORD }}#g" ./.env
-
-        # copy all the files to the server was taken from: https://stackoverflow.com/a/61236896/15015069 (create dir, copy content in it, tar it, scp it)
-        -
-          name: tar content to scp to server (create dir, copy content in it, tar it)
-          run: |
-            mkdir ${{ vars.DIR_OF_CONTENT_TO_SCP }}
-            cp -TR . ${{ vars.DIR_OF_CONTENT_TO_SCP }}
-
-        -
-          name: debugging
-          run: | 
-            echo "running ls to see if the files are there"
-            ls
-            echo "running ls ${{ vars.DIR_OF_CONTENT_TO_SCP }} to see if the files are there"
-            ls ${{ vars.DIR_OF_CONTENT_TO_SCP }}
-            echo "running pwd to see where we are"
-            pwd
             
         - 
           name: copy everything over to the server
