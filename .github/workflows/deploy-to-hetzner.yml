@@ -50,7 +50,7 @@ jobs:
               host: ${{ secrets.HETZNER_VPS_IP }}
               username: ${{ secrets.HETZNER_VPS_SSH_USER }}
               key: ${{ secrets.HETZNER_VPS_SSH_PRIVATE_KEY }}
-              source: ${{ github.workspace }} 
+              source: ${{ vars.DIR_OF_CONTENT_TO_SCP }}
               target: ${{ vars.CONTENT_DIRECTORY_PATH }}
 
         - 
