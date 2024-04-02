@@ -23,7 +23,7 @@ URLS_TO_SCRAPE = [ "https://www.home.saxo/en-mena/legal/risk-warning/saxo-risk-w
                , "https://www.icmarkets.eu/en/education/advantages-of-cfds"
                , "https://helpcentre.trading212.com/hc/en-us"
                , "https://www.plus500.com/en-es/"
-               , "https://capital.com/"
+               , "https://capital.com/international-retail-service-definition"
                , "https://www.xtb.com/en/education/what-is-cfd-trading"
                ]
 
@@ -71,11 +71,6 @@ def get_page_text_using_selenium(url_to_scrape):
 
     # https://stackoverflow.com/a/53970825/15015069 --> prevent crashing on certain websites
     options.add_argument('--disable-dev-shm-usage')
-
-
-    # set the language to english --> to avoid language detection by the website (regex pattern is in english)
-    options.add_argument("--lang=en-GB")
-
 
     if os.path.exists("/.dockerenv"): # check if we are in a docker container --> if yes, there is no chrome driver installed, and I have to call the remote driver
         print("Running in docker container, using remote selenium")
