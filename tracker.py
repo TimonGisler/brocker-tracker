@@ -74,11 +74,7 @@ def get_page_text_using_selenium(url_to_scrape):
 
 
     # set the language to english --> to avoid language detection by the website (regex pattern is in english)
-    prefs = {
-    "translate_whitelists": {"your native language":"en"},
-    "translate":{"enabled":"True"}
-}
-    options.add_experimental_option("prefs", prefs)
+    options.add_experimental_option('prefs', {'intl.accept_languages': 'en,en_US'})
 
 
     if os.path.exists("/.dockerenv"): # check if we are in a docker container --> if yes, there is no chrome driver installed, and I have to call the remote driver
