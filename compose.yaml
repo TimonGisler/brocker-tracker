@@ -7,7 +7,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    image: selenium/standalone-chrome
+    image: seleniarm/standalone-chromium # the normal selenium project (selenium/standalone-chrome) does not support arm, the used image is a fork (https://github.com/seleniumhq-community/docker-seleniarm)
     ports:
     - 4444:4444
   brockertracker:

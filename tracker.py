@@ -82,7 +82,7 @@ def get_page_text_using_selenium(url_to_scrape):
         # below alternate dev run way i can also only start the remote driver and connect to it
             # guide to run selenium in container and connect: (https://stackoverflow.com/questions/45323271/how-to-run-selenium-with-chrome-in-docker)
             #local dev commands/code (with docker):
-            # docker run -d -p 4444:4444 selenium/standalone-chrome
+            # docker run -d -p 4444:4444 seleniarm/standalone-chromium
             # driver = driver = webdriver.Remote("http://127.0.0.1:4444/wd/hub", DesiredCapabilities.CHROME, options=options)
             # driver = driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
 
