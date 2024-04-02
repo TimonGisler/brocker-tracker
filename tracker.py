@@ -73,8 +73,8 @@ def get_page_text_using_selenium(url_to_scrape):
     options.add_argument('--disable-dev-shm-usage')
 
     # set the language to english --> to avoid language detection by the website (regex pattern is in english)
-    options.add_argument("--lang=en-US")
-    
+    options.add_argument("--lang=en")
+
     if os.path.exists("/.dockerenv"): # check if we are in a docker container --> if yes, there is no chrome driver installed, and I have to call the remote driver
         print("Running in docker container, using remote selenium")
         driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
