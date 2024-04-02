@@ -106,7 +106,9 @@ def extract_percentage_from_text(text):
         percentage = match.group(1)
         return percentage
     except Exception as e:
-        print("This text caused error: ", text)
+        print("=================Text below could not be parsed======================")
+        print(text)
+        print("======================END OF TEXT======================")
         raise e
 
 
