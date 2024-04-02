@@ -72,8 +72,14 @@ def get_page_text_using_selenium(url_to_scrape):
     # https://stackoverflow.com/a/53970825/15015069 --> prevent crashing on certain websites
     options.add_argument('--disable-dev-shm-usage')
 
+
     # set the language to english --> to avoid language detection by the website (regex pattern is in english)
-    options.add_experimental_option('prefs', {'intl.accept_languages': 'en,en_US'}) # https://stackoverflow.com/questions/55150118/trouble-modifying-the-language-option-in-selenium-python-bindings
+    prefs = {
+    "translate_whitelists": {"your native language":"en"},
+    "translate":{"enabled":"True"}
+}
+    options.add_experimental_option("prefs", prefs)
+
 
     if os.path.exists("/.dockerenv"): # check if we are in a docker container --> if yes, there is no chrome driver installed, and I have to call the remote driver
         print("Running in docker container, using remote selenium")
