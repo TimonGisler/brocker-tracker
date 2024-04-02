@@ -1,5 +1,5 @@
 name: Deploy to hetzner
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+run-name: ${{ github.actor }} triggered deploy to hetzner
 # specify when this workflow runs
 # use event with filters --> https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#using-filters
 # only run the job if push on certain branch

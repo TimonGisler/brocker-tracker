@@ -1,0 +1,25 @@
+name: Deploy to hetzner
+run-name: ${{ github.actor }} triggered startin of tracker task
+
+on:
+    schedule:
+        # At 00:00 on the first day of the month https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+        - cron: '0 0 1 * *'
+        
+jobs:
+    build_and_deploy_to_hetzner: # the job id
+        name: start the brocker tracker task (docker compose up) # the job name (displayed in ui)
+        runs-on: ubuntu-latest # Good to know, common tools like docker and npm are preinstalled in ubuntu-latest https://github.com/actions/runner-images#software-and-image-support
+        
+        # define steps to execute https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps
+        steps:   
+        - 
+          name: run docker compose on the server
+          uses: appleboy/ssh-action@v1.0.2 # https://github.com/appleboy/ssh-action#using-private-key
+          with:
+              host: ${{ secrets.HETZNER_VPS_IP }}
+              username: ${{ secrets.HETZNER_VPS_SSH_USER }}
+              key: ${{ secrets.HETZNER_VPS_SSH_PRIVATE_KEY }}
+              script: | # pipe char means text below is a text block and new lines also belong to it. https://stackoverflow.com/a/61661091/15015069
+                cd ${{ vars.CONTENT_DIRECTORY_PATH }}
+                docker compose up --abort-on-container-exit --build
