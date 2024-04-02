@@ -99,11 +99,16 @@ def get_page_text_using_selenium(url_to_scrape):
 
 def extract_percentage_from_text(text):
     """Extracts the percentage of retail investors that loose money from the passed text."""
-    # Search for the specific text pattern
-    pattern = r"(\d+.?\d+)% of retail"
-    match = re.search(pattern, text)
-    percentage = match.group(1)
-    return percentage
+    try:
+        # Search for the specific text pattern
+        pattern = r"(\d+.?\d+)% of retail"
+        match = re.search(pattern, text)
+        percentage = match.group(1)
+        return percentage
+    except Exception as e:
+        print("This text caused error: ", text)
+        raise e
+
 
 
 def save_data_to_file(percentage_which_loose_money, broker_url):
