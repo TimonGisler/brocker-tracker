@@ -4,8 +4,8 @@ run-name: ${{ github.actor }} triggered startin of tracker task
 on:
     workflow_dispatch: # allows to run the workflow manually https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow
     schedule:
-        # At 00:00 on the first day of the month https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-        - cron: '0 0 1 * *'
+        # At 00:00 on the 5 day of the month https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+        - cron: '0 0 5 * *'
         
 jobs:
     start-tracking-job-on-server: # the job id
