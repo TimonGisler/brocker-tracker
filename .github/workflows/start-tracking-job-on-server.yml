@@ -1,4 +1,4 @@
-name: Deploy to hetzner
+name: start tracking job on server
 run-name: ${{ github.actor }} triggered startin of tracker task
 
 on:
