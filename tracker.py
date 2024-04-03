@@ -18,13 +18,17 @@ FILE_PATH = "data/data.txt"
 
 URLS_TO_SCRAPE = [ "https://www.home.saxo/en-mena/legal/risk-warning/saxo-risk-warning"
                , "https://www.interactivebrokers.co.uk/de/index.php?f=38931&cc=US"
-               , "https://www.etoro.com/trading/cfd-leverage-and-margin/"
+               , "https://www.etoro.com/news-and-analysis/in-depth-analysis/what-retail-investors-are-thinking/"
                , "https://www.ig.com/en/risk-management/what-is-leverage"
                , "https://www.icmarkets.eu/en/education/advantages-of-cfds"
                , "https://helpcentre.trading212.com/hc/en-us"
                , "https://www.plus500.com/en-es/"
                , "https://capital.com/international-retail-service-definition"
                , "https://www.xtb.com/en/education/what-is-cfd-trading"
+               , "https://pepperstone.com/en-eu/education/trade-cfds/"
+               , "https://www.tradestation-international.com/global/cfds-trading-commissions/"
+               , "https://fxview.com/global"
+               , "https://www.buxmarkets.com/en/trading/cfd-trading/intro-to-cfds"
                ]
 
 
