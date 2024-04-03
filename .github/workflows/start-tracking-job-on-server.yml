@@ -7,7 +7,7 @@ on:
         - cron: '0 0 1 * *'
         
 jobs:
-    build_and_deploy_to_hetzner: # the job id
+    start-tracking-job-on-server: # the job id
         name: start the brocker tracker task (docker compose up) # the job name (displayed in ui)
         runs-on: ubuntu-latest # Good to know, common tools like docker and npm are preinstalled in ubuntu-latest https://github.com/actions/runner-images#software-and-image-support
         
