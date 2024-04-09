@@ -18,7 +18,7 @@ FILE_PATH = "data/data.txt"
 
 URLS_TO_SCRAPE = [ "https://www.home.saxo/en-mena/legal/risk-warning/saxo-risk-warning"
                , "https://www.interactivebrokers.co.uk/de/index.php?f=38931&cc=US"
-               , "https://www.etoro.com/news-and-analysis/in-depth-analysis/what-retail-investors-are-thinking/"
+               , "https://dub.sh/etoro" # bing search for etoro, because etoro blocks me
                , "https://www.ig.com/en/risk-management/what-is-leverage"
                , "https://www.icmarkets.eu/en/education/advantages-of-cfds"
                , "https://helpcentre.trading212.com/hc/en-us"
